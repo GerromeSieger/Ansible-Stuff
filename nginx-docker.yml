@@ -1,0 +1,31 @@
+---
+- name: samplebook
+  hosts : [node3]
+  remote_user: victor
+  become: true
+
+  vars_files:
+    - var.yml
+
+  tasks:
+  - name: Start nginx  service
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: STart Postgres
+    service:
+      name: postgresql
+      state: started
+      enabled: yes
+
+  - name: Start docker
+    command: sudo chmod 666 /var/run/docker.sock
+  
+  - name: Deploy app
+    docker_compose:
+      project_src: MERN-Stack-App
+      build: no
+    register: output
+    

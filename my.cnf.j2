@@ -1,0 +1,274 @@
+## {{ ansible_managed }}
+
+# The following options will be passed to all MySQL clients
+[client]
+#password			= your_password
+port				= {{ mariadb_port }}
+socket				= {{ mariadb_socket }}
+default_character_set		= {{ mariadb_character_set_server }}
+
+[mysql]
+socket				= {{ mariadb_socket }}
+no_auto_rehash
+default_character_set		= {{ mariadb_character_set_server }}
+
+# The MySQL server
+[mysqld]
+
+## General
+user				= mysql
+
+socket				= {{ mariadb_socket }}
+pid_file			= {{ mariadb_pid_file }}
+datadir				= {{ mariadb_datadir }}
+
+port				= {{ mariadb_port }}
+bind-address			= {{ mariadb_bind_address }}
+{% if mariadb_skip_name_resolve %}
+skip_name_resolve
+{% endif %}
+{% if mariadb_sql_mode %}
+sql_mode			= {{ mariadb_sql_mode }}
+{% endif %}
+
+lower_case_table_names		= {{ mariadb_lower_case_table_names }}
+event_scheduler			= {{ mariadb_event_scheduler_state }}
+{% if mariadb_open_files_limit is defined %}
+open_files_limit		= {{ mariadb_open_files_limit }}
+{% endif %}
+
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links			= 0
+
+ignore-db-dirs			= lost+found
+
+# http://dev.mysql.com/doc/refman/5.5/en/performance-schema.html
+;performance_schema
+
+## Character sets
+character_set_server		= {{ mariadb_character_set_server }}
+collation_server		= {{ mariadb_collation_server }}
+#init_connect			= "SET NAMES {{ mariadb_character_set_server }}"
+
+## Logging configuration.
+{% if mariadb_log_error == 'syslog' or mariadb_log == 'syslog' %}
+syslog
+syslog-tag			= {{ mariadb_syslog_tag }}
+{% else %}
+{% if mariadb_log %}
+log				= {{ mariadb_log }}
+{% endif %}
+log_error			= {{ mariadb_log_error }}
+{% endif %}
+
+{% if mariadb_slow_query_log_enabled %}
+## Slow query log configuration.
+slow_query_log			= 1
+slow_query_log_file		= {{ mariadb_slow_query_log_file }}
+long_query_time			= {{ mariadb_slow_query_time }}
+{% endif %}
+
+## Networking
+{% if mariadb_back_log is defined %}
+back_log			= {{ mariadb_back_log }}
+{% endif %}
+max_connections			= {{ mariadb_max_connections }}
+{% if mariadb_max_connect_errors is defined %}
+max_connect_errors		= {{ mariadb_max_connect_errors }}
+{% endif %}
+max_allowed_packet		= {{ mariadb_max_allowed_packet }}
+{% if mariadb_interactive_timeout is defined %}
+interactive_timeout		= {{ mariadb_interactive_timeout }}
+{% endif %}
+wait_timeout			= {{ mariadb_wait_timeout }}
+
+{% if mariadb_replication_enabled %}
+## Replication
+server_id			= {{ mariadb_server_id }}
+{% if mariadb_report_host is defined %}
+report_host			= {{ mariadb_report_host }}
+{% endif %}
+{% if mariadb_replicate_same_server_id is defined %}
+replicate_same_server_id	= {{ mariadb_replicate_same_server_id }}
+{% endif %}
+
+{% if mariadb_replication_master %}
+{% if mariadb_auto_increment_increment is defined %}
+auto_increment_increment	= {{ mariadb_auto_increment_increment }}
+{% endif %}
+{% if mariadb_auto_increment_offset is defined %}
+auto_increment_offset		= {{ mariadb_auto_increment_offset }}
+{% endif %}
+{% if mariadb_slave_net_timeout is defined %}
+slave_net_timeout		= {{ mariadb_slave_net_timeout }}
+{% endif %}
+log_bin				= {{ mariadb_log_bin | default("mysql-bin") }}
+log_bin_index			= {{ mariadb_log_bin_index | default("mysql-bin.index") }}
+binlog_format			= {{ mariadb_binlog_format}}
+expire_logs_days		= {{ mariadb_expire_logs_days }}
+max_binlog_size			= {{ mariadb_max_binlog_size }}
+{% if mariadb_sync_binlog is defined %}
+sync_binlog			= {{ mariadb_sync_binlog }}
+{% endif %}
+{% if mariadb_sync_master_info is defined %}
+sync_master_info		= {{ mariadb_sync_master_info }}
+{% endif %}
+{% if mariadb_log_slave_updates is defined %}
+log_slave_updates		= {{ mariadb_log_slave_updates }}
+{% endif %}
+{% for key, value in mariadb_databases.iteritems() %}
+{% if value.replicate is defined %}
+{% if value.replicate|default(1) %}
+binlog_do_db			= {{ value.name | default(key) }}
+{% else %}
+binlog_ignore_db		= {{ value.name | default(key) }}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if mariadb_replication_slave %}
+{% if mariadb_slave_read_only | default(true) %}
+read_only
+{% endif %}
+{% if mariadb_slave_skip_errors is defined %}
+slave_skip_errors		= {{ mariadb_slave_skip_errors }}
+{% endif %}
+relay_log			= {{ mariadb_relay_log | default("relay-bin") }}
+relay_log_index			= {{ mariadb_relay_log_index | default("relay-bin.index") }}
+{% if mariadb_max_relay_log_size is defined %}
+max_relay_log_size		= {{ mariadb_max_relay_log_size }}
+{% endif %}
+{% if mariadb_relay_log_space_limit is defined %}
+relay_log_space_limit		= {{ mariadb_relay_log_space_limit }}
+{% endif %}
+{% if mariadb_sync_relay_log is defined %}
+sync_relay_log			= {{ mariadb_sync_relay_log }}
+{% endif %}
+{% if mariadb_sync_relay_log_info is defined %}
+sync_relay_log_info		= {{ mariadb_sync_relay_log_info }}
+{% endif %}
+{% if mariadb_relay_log_recovery is defined %}
+relay_log_recovery		= {{ mariadb_relay_log_recovery }}
+{% endif %}
+
+{% endif %}
+{% endif %}
+## Memory settings.
+
+### Cache
+{% if mariadb_thread_cache_size is defined %}
+thread_cache_size		= {{ mariadb_thread_cache_size }}
+{% endif %}
+query_cache_type		= {{ mariadb_query_cache_type }}
+query_cache_size		= {{ mariadb_query_cache_size }}
+query_cache_limit		= {{ mariadb_query_cache_limit }}
+table_open_cache		= {{ mariadb_table_open_cache }}
+{% if mariadb_table_definition_cache is defined %}
+table_definition_cache		= {{ mariadb_table_definition_cache }}
+{% endif %}
+{% if mariadb_group_concat_max_len is defined %}
+group_concat_max_len		= {{ mariadb_group_concat_max_len }}
+{% endif %}
+
+### Per-thread Buffers
+sort_buffer_size		= {{ mariadb_sort_buffer_size }}
+read_buffer_size		= {{ mariadb_read_buffer_size }}
+read_rnd_buffer_size		= {{ mariadb_read_rnd_buffer_size }}
+join_buffer_size		= {{ mariadb_join_buffer_size }}
+
+### Temp Tables
+tmp_table_size			= {{ mariadb_tmp_table_size }}
+max_heap_table_size		= {{ mariadb_max_heap_table_size }}
+
+{% if mariadb_default_storage_engine is defined %}
+### Storage Engines
+default_storage_engine		= {{ mariadb_default_storage_engine }}
+
+{% endif %}
+### MyISAM
+{% if mariadb_myisam_recover is defined %}
+myisam_recover			= {{ mariadb_myisam_recover }}
+{% endif %}
+key_buffer_size			= {{ mariadb_key_buffer_size }}
+myisam_sort_buffer_size		= {{ mariadb_myisam_sort_buffer_size }}
+
+### InnoDB settings.
+{% if mariadb_innodb is defined %}
+innodb				= {{ mariadb_innodb }}
+{% endif %}
+{% if mariadb_innodb_data_file_path is defined %}
+innodb_data_file_path		= {{ mariadb_innodb_data_file_path }}
+{% endif %}
+innodb_file_per_table		= {{ mariadb_innodb_file_per_table }}
+innodb_buffer_pool_size		= {{ mariadb_innodb_buffer_pool_size }}
+{% if mariadb_innodb_buffer_pool_instances is defined %}
+innodb_buffer_pool_instances	= {{ mariadb_innodb_buffer_pool_instances }}
+{% endif %}
+innodb_flush_log_at_trx_commit	= {{ mariadb_innodb_flush_log_at_trx_commit }}
+innodb_log_file_size		= {{ mariadb_innodb_log_file_size }}
+innodb_log_buffer_size		= {{ mariadb_innodb_log_buffer_size }}
+{% if mariadb_innodb_log_files_in_group is defined %}
+innodb_log_files_in_group	= {{ mariadb_innodb_log_files_in_group }}
+{% endif %}
+{% if mariadb_supports_innodb_large_prefix %}
+innodb_large_prefix		= {{ mariadb_innodb_large_prefix }}
+innodb_file_format		= {{ mariadb_innodb_file_format }}
+{% endif %}
+{% if mariadb_innodb_open_files is defined %}
+innodb_open_files		= {{ mariadb_innodb_open_files }}
+{% endif %}
+innodb_lock_wait_timeout	= {{ mariadb_innodb_lock_wait_timeout }}
+{% if mariadb_innodb_doublewrite is defined %}
+innodb_doublewrite		= {{ mariadb_innodb_doublewrite }}
+{% endif %}
+{% if mariadb_innodb_thread_concurrency is defined %}
+innodb_thread_concurrency	= {{ mariadb_innodb_thread_concurrency }}
+{% endif %}
+{% if mariadb_innodb_flush_method is defined %}
+innodb_flush_method		= {{ mariadb_innodb_flush_method }}
+{% endif %}
+{% if mariadb_innodb_read_io_threads is defined %}
+innodb_read_io_threads		= {{ mariadb_innodb_read_io_threads }}
+{% endif %}
+{% if mariadb_innodb_write_io_threads is defined %}
+innodb_write_io_threads		= {{ mariadb_innodb_write_io_threads }}
+{% endif %}
+{% if mariadb_innodb_io_capacity is defined %}
+innodb_io_capacity		= {{ mariadb_innodb_io_capacity }}
+{% endif %}
+{% if mariadb_innodb_io_capacity_max is defined %}
+innodb_io_capacity_max		= {{ mariadb_innodb_io_capacity_max }}
+{% endif %}
+{% if mariadb_innodb_stats_on_metadata is defined %}
+# avoid statistics update when doing e.g show tables
+innodb_stats_on_metadata	= {{ mariadb_innodb_stats_on_metadata }}
+{% endif %}
+
+[mysqld_safe]
+pid_file			= {{ mariadb_pid_file }}
+{% if mariadb_nice is defined %}
+nice				= {{ mariadb_nice }}
+{% endif %}
+log_error			= {{ mariadb_log_error }}
+{% if mariadb_open_files_limit is defined %}
+open_files_limit		= {{ mariadb_open_files_limit }}
+{% endif %}
+datadir				= {{ mariadb_datadir }}
+
+[mysqldump]
+quick
+max_allowed_packet		= {{ mariadb_mysqldump_max_allowed_packet }}
+
+[myisamchk]
+key_buffer_size			= {{ mariadb_key_buffer_size }}
+sort_buffer_size		= {{ mariadb_sort_buffer_size }}
+
+[mysqlhotcopy]
+interactive_timeout
+
+# * IMPORTANT: Additional settings that can override those from this file!
+#   The files must end with '.cnf', otherwise they'll be ignored.
+#
+!includedir {{ mariadb_config_include_dir }}
+

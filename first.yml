@@ -1,0 +1,11 @@
+---
+- name: samplebook
+  hosts : [Node2]
+  remote_user: victor
+  become: true
+  vars_files:
+    - var.yml
+
+  roles:
+  - {role: docker-compose}
+...

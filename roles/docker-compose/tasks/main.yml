@@ -1,0 +1,9 @@
+---
+  - name: Start docker
+    command: sudo chmod 666 /var/run/docker.sock
+  
+  - name: Deploy app
+    docker_compose:
+      project_src: MERN-Stack-App
+      build: no
+    register: output
