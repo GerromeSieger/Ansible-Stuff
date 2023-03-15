@@ -7,14 +7,41 @@
     - var.yml
 
   tasks:
+    - name: get updates
+      apt:
+        update_cache: yes
+  
+    - name: Install packages
+      apt:
+        name:
+          - ufw
+          - sshd
+        state: latest      
+
     - name: Allow SSH traffic
       community.general.ufw:
         rule: allow
         port: ssh
+
     - name: Allow HTTP traffic
       community.general.ufw:
         rule: allow
         port: http
+
     - name: Enable UFW firewall
       community.general.ufw:
-        state: enabled
+        state: enabled        
+      notify:
+        - restart ufw
+
+    - name: Disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'        
+
+  handlers:
+    - name: Restart ufw service
+      systemd:
+        name: ufw.service
+        state: restarted
