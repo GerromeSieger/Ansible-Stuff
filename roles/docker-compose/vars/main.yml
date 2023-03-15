@@ -1,2 +1,3 @@
 ---
 # vars file for docker-compose
+ansible_become_pass: Ifah6354!

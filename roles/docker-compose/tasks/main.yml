@@ -1,9 +1,34 @@
 ---
-  - name: Start docker
-    command: sudo chmod 666 /var/run/docker.sock
-  
-  - name: Deploy app
-    docker_compose:
-      project_src: MERN-Stack-App
-      build: no
-    register: output
+  - name: Update package cache
+    apt:
+      update_cache: yes
+
+  - name: Install required packages
+    apt:
+      name:
+        - fail2ban
+        - ufw
+      state: present
+
+  - name: update configuration file - /etc/fail2ban/fail2ban.local
+    template:
+      src: etc/fail2ban/fail2ban.local.j2
+      dest: /etc/fail2ban/fail2ban.local
+      owner: victor
+      group: root
+      mode: 0644
+    notify: restart fail2ban
+
+  - name: update configuration file - /etc/fail2ban/jail.local
+    template:
+      src: etc/fail2ban/jail.local.j2
+      dest: /etc/fail2ban/jail.local
+      owner: victor
+      group: root
+      mode: 0644
+    notify: restart fail2ban
+
+
+
+
+

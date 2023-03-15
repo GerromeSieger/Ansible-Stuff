@@ -1,6 +1,6 @@
 ---
 - name: samplebook
-  hosts : [Node2]
+  hosts : [NODE2]
   remote_user: victor
   become: true
   vars_files:

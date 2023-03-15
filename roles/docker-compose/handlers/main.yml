@@ -1,2 +1,7 @@
 ---
 # handlers file for docker-compose
+    - name: restart fail2ban
+      service:
+        name: fail2ban
+        state: restarted
+

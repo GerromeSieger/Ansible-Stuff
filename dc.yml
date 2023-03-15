@@ -1,6 +1,6 @@
 ---
 - name: samplebook
-  hosts : [Node2]
+  hosts : [NODE2]
   remote_user: victor
   become: true
 
@@ -9,11 +9,11 @@
 
   tasks:
   - name: Start docker
-    command: sudo chmod 666 /var/run/docker.sock
+    command: sudo systemctl stop jenkins
 
-  - name: Deploy app
-    docker_compose:
-      project_src: MERN-Stack-App
-      build: no
-    register: output
+#  - name: Deploy app
+#    docker_compose:
+#      project_src: MERN-Stack-App
+#      build: no
+#    register: output
 
