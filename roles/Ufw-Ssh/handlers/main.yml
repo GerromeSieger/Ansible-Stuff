@@ -1,2 +1,5 @@
 ---
-# handlers file for Ufw-Ssh
+    - name: Restart Ufw Service
+      systemd:
+        name: ufw.service
+        state: restarted

@@ -1,2 +1,2 @@
 ---
-# vars file for Ufw-Ssh
+ansible_become_pass: Ifah6354!

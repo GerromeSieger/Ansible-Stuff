@@ -8,4 +8,5 @@
 
   roles:
   - {role: Fail2ban}
+  - {role: Ufw-Ssh}  
 ...

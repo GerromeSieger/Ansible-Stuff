@@ -1,2 +1,33 @@
 ---
-# tasks file for Ufw-Ssh
+    - name: Get Updates
+      apt:
+        update_cache: yes
+  
+    - name: Install Packages
+      apt:
+        name:
+          - ufw
+          - ssh
+        state: latest      
+
+    - name: Allow SSH Traffic
+      community.general.ufw:
+        rule: allow
+        port: ssh
+
+    - name: Allow HTTP Traffic
+      community.general.ufw:
+        rule: allow
+        port: http
+
+    - name: Enable UFW firewall
+      community.general.ufw:
+        state: enabled        
+      notify:
+        - restart ufw
+
+    - name: Disable Root Login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'  
