@@ -1,10 +1,11 @@
-• name: Configure UFW
-  hosts: [NODE2]
+- name: Configure UFW
+  hosts : [NODE2]
   remote_user: victor
   become: true
 
   vars_files:
     - var.yml
+
   tasks:
     - name: Allow SSH traffic
       community.general.ufw:
