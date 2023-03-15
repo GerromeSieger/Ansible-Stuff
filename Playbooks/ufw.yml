@@ -1,0 +1,15 @@
+• name: Configure UFW
+  hosts: all
+  become: true
+  tasks:
+    - name: Allow SSH traffic
+      community.general.ufw:
+        rule: allow
+        port: ssh
+    - name: Allow HTTP traffic
+      community.general.ufw:
+        rule: allow
+        port: http
+    - name: Enable UFW firewall
+      community.general.ufw:
+        state: enabled

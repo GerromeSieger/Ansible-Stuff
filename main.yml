@@ -1,5 +1,5 @@
 ---
-- name: samplebook
+- name: SERVER_HARDENING
   hosts : [NODE2]
   remote_user: victor
   become: true
@@ -7,5 +7,5 @@
     - var.yml
 
   roles:
-  - {role: docker-compose}
+  - {role: Fail2ban}
 ...
