@@ -1,0 +1,20 @@
+- name: Vulnerability Scanning
+  hosts : [NODE2]
+  remote_user: victor
+  become: true
+
+  vars_files:
+    - var.yml
+
+  tasks:
+    - name: Install Nmap package
+      apt:
+        name: nmap
+
+    - name: Run Nmap scan
+      command: nmap -sV --script vuln {{ ansible_default_ipv4.address }}
+      register: nmap_result
+
+    - name: Print Nmap output
+      debug:
+        var: nmap_result.stdout_lines    
