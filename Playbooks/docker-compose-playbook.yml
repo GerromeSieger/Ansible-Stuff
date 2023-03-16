@@ -8,12 +8,9 @@
     - var.yml
 
   tasks:
-  - name: Start docker
-    command: sudo systemctl stop jenkins
-
-#  - name: Deploy app
-#    docker_compose:
-#      project_src: MERN-Stack-App
-#      build: no
-#    register: output
+    - name: Deploy app
+      docker_compose:
+        project_src: MERN-Stack-App
+        build: no
+      register: output
 
