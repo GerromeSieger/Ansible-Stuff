@@ -1,5 +1,5 @@
 ---
-- name: samplebook
+- name: DOCKER_COMPOSE
   hosts : [NODE2]
   remote_user: victor
   become: true

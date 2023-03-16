@@ -1,6 +1,6 @@
 ---
-- name: Installing Apache2
-  hosts : [node4]
+- name: INSTALLING APACHE2
+  hosts : [NODE2]
   remote_user: victor
   become: true
 
@@ -8,16 +8,16 @@
     - var.yml
 
   tasks:
-  - name: get updates
+  - name: GET UPDATES
     apt:
      update_cache: yes
 
-  - name: Installing Apache2
+  - name: INSTALLING APACHE2
     apt:
      name: apache2
      state: latest
 
-  - name: Start service
+  - name: START SERVICES
     service:
       name: apache2
       state: restarted
