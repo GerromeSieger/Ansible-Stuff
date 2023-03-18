@@ -6,7 +6,7 @@
   vars_files:
     - var.yml
   tasks:
-  - include: Playbooks/nmap.yml
+  - include_tasks: Playbooks/nmap.yml
   roles:
   - {role: Fail2ban}
   - {role: Ufw-Ssh}  

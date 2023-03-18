@@ -1,12 +1,13 @@
-- name: VULNERABILITY SCANNING
-  hosts : [NODE2]
-  remote_user: victor
-  become: true
+---
+#- name: VULNERABILITY SCANNING
+#  hosts : [NODE2]
+#  remote_user: victor
+#  become: true
 
-  vars_files:
-    - var.yml
+#  vars_files:
+#    - var.yml
 
-  tasks:
+#  tasks:
     - name: Install Nmap package
       apt:
         name: nmap
