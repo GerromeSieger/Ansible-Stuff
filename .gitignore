@@ -1,0 +1,4 @@
+var.yml
+Playbooks/var.yml
+roles/Fail2ban/vars/main.yml
+roles/Ufw-Ssh/vars/main.yml
