@@ -1,0 +1,26 @@
+---
+- name: INSTALLING DOCKER
+  hosts : [NODE2]
+  remote_user: victor
+  become: true
+
+  vars_files:
+    - var.yml
+
+  tasks:
+  - name: GET UPDATES
+    apt:
+     update_cache: yes
+
+  - name: INSTALLING DOCKER
+    apt:
+     name: 
+      - docker.io
+      - docker-compose
+     state: latest
+
+  - name: START SERVICES
+    service:
+      name: docker
+      state: restarted
+      enabled: yes
